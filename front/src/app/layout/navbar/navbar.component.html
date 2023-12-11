@@ -4,6 +4,30 @@
             <img width="30" class="mr-1" src="assets/images/logo.png" alt="logo">
             <span>EasyMedia</span>
         </div>
-        <mat-icon class="pointer">menu</mat-icon>
+        <button mat-icon-button [matMenuTriggerFor]="menu">
+            <mat-icon>menu</mat-icon>
+        </button>
+          <mat-menu #menu="matMenu">
+            <div class="user">
+              <span>Camilo Cifuentes</span>
+              <hr>
+            </div>
+            <button routerLink="/create-post" mat-menu-item>
+              <mat-icon>notifications_off</mat-icon>
+              <span>Create post</span>
+            </button>
+            <button routerLink="/my-posts" mat-menu-item>
+              <mat-icon>notifications_off</mat-icon>
+              <span>My publications</span>
+            </button>
+            <button routerLink="/all-posts" mat-menu-item>
+              <mat-icon>notifications_off</mat-icon>
+              <span>See publications</span>
+            </button>
+            <button routerLink="/auth/login" mat-menu-item>
+              <mat-icon>notifications_off</mat-icon>
+              <span>Logout</span>
+            </button>
+          </mat-menu>
     </div>
 </div>

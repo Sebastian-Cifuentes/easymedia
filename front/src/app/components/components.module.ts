@@ -6,6 +6,7 @@ import { FilterByWordComponent } from './filter-by-word/filter-by-word.component
 import { ShowPostsComponent } from './show-posts/show-posts.component';
 import { MaterialModule } from '../material/material.module';
 import { NothingToSeeComponent } from './nothing-to-see/nothing-to-see.component';
+import { PaginatorComponent } from './paginator/paginator.component';
 
 
 
@@ -15,7 +16,8 @@ import { NothingToSeeComponent } from './nothing-to-see/nothing-to-see.component
     FilterDateComponent,
     FilterByWordComponent,
     ShowPostsComponent,
-    NothingToSeeComponent
+    NothingToSeeComponent,
+    PaginatorComponent
   ],
   imports: [
     CommonModule,
@@ -26,7 +28,8 @@ import { NothingToSeeComponent } from './nothing-to-see/nothing-to-see.component
     FilterDateComponent,
     FilterByWordComponent,
     ShowPostsComponent,
-    NothingToSeeComponent
+    NothingToSeeComponent,
+    PaginatorComponent
   ]
 })
 export class ComponentsModule { }
