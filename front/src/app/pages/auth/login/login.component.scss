@@ -1,0 +1,35 @@
+@import '../../../../assets/styles/colors.scss';
+
+.login {
+    .login__image {
+        text-align: center;
+    }
+    .login__info {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        .subtitle {
+            font-size: 15px;
+            color: $font-subtitle-color;
+        }
+    }
+    .login__form {
+        display: flex;
+        flex-direction: column;
+        .form-title {
+            font-size: 20px;
+            text-align: center;
+            color: $font-third-color;
+        }
+    }
+    .register {
+        display: flex;
+        justify-content: flex-end;
+        p {
+            color: $font-fourth-color;
+            a {
+                color: $font-subtitle-color;
+            }
+        }
+    }
+}

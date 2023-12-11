@@ -1,0 +1,36 @@
+<div class="login container">
+
+    <div class="login__image">
+        <img width="215" src="assets/images/auth-image.png" alt="">
+    </div>
+    <div class="login__info">
+        <h1 class="main-title">Easy Media</h1>
+        <p class="subtitle">Now, share is easy</p>
+    </div>
+
+    <form class="login__form">
+
+        <h2 class="form-title">Sign In</h2>
+
+        <mat-form-field floatLabel="always">
+            <mat-label>Email</mat-label>
+            <input matInput placeholder="pat@example.com" [formControl]="email" required>
+        </mat-form-field>
+        <mat-form-field floatLabel="always">
+            <mat-label>Password</mat-label>
+            <input matInput placeholder="********" [type]="hide ? 'password' : 'text'" required>
+            <button mat-icon-button matSuffix (click)="hide = !hide" [attr.aria-label]="'Hide password'" [attr.aria-pressed]="hide">
+                <mat-icon>{{hide ? 'visibility_off' : 'visibility'}}</mat-icon>
+              </button>
+        </mat-form-field>
+
+        <button class="btn-primary">
+            SIGN IN
+        </button>
+    </form>
+
+    <div class="register mt-1">
+        <p>Don't have an account? <a routerLink="/auth/register">Sign up here</a></p>
+    </div>
+
+</div>

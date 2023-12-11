@@ -1,0 +1,41 @@
+@import '../../../../assets/styles/colors.scss';
+
+.register {
+    .register__image {
+        text-align: center;
+    }
+    .register__info {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        .title {
+            font-weight: bold;
+            font-size: 30px;
+            color: $font-title-color;
+            margin: 0;
+        }
+        .subtitle {
+            font-size: 15px;
+            color: $font-subtitle-color;
+        }
+    }
+    .register__form {
+        display: flex;
+        flex-direction: column;
+        .form-title {
+            font-size: 20px;
+            text-align: center;
+            color: $font-third-color;
+        }
+    }
+    .login {
+        display: flex;
+        justify-content: end;
+        p {
+            color: $font-fourth-color;
+            a {
+                color: $font-subtitle-color;
+            }
+        }
+    }
+}

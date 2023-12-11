@@ -1,0 +1,13 @@
+@import '../styles/colors.scss';
+
+.btn-primary {
+    width: 100%;
+    border-radius: 20px;
+    border: 0;
+    padding: 10px;
+    color: $font-third-color;
+    font-weight: bold;
+    font-size: 20px;
+    letter-spacing: 1px;
+    background: linear-gradient(to right, $background-blue-color, $background-pink-color);
+}

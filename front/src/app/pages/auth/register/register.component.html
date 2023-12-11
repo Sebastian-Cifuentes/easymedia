@@ -1,0 +1,47 @@
+<div class="register container">
+
+    <div class="register__image">
+        <img width="75" src="assets/images/auth-image.png" alt="">
+    </div>
+    <div class="register__info">
+        <h1 class="title">Easy Media</h1>
+        <p class="subtitle">Now, share is easy</p>
+    </div>
+
+    <form class="register__form">
+
+        <h2 class="form-title">Sign In</h2>
+
+        <mat-form-field floatLabel="always">
+            <mat-label>Full name</mat-label>
+            <input matInput placeholder="Camilo Cifuentes" required>
+        </mat-form-field>
+        <mat-form-field floatLabel="always">
+            <mat-label>Email</mat-label>
+            <input matInput placeholder="pat@example.com" required>
+        </mat-form-field>
+        <mat-form-field floatLabel="always">
+            <mat-label>Password</mat-label>
+            <input matInput placeholder="********" [type]="hide ? 'password' : 'text'" required>
+            <button mat-icon-button matSuffix (click)="hide = !hide" [attr.aria-label]="'Hide password'" [attr.aria-pressed]="hide">
+                <mat-icon>{{hide ? 'visibility_off' : 'visibility'}}</mat-icon>
+              </button>
+        </mat-form-field>
+        <mat-form-field floatLabel="always">
+            <mat-label>Confirm Password</mat-label>
+            <input matInput placeholder="********" [type]="hide1 ? 'password' : 'text'" required>
+            <button mat-icon-button matSuffix (click)="hide1 = !hide1" [attr.aria-label]="'Hide password'" [attr.aria-pressed]="hide1">
+                <mat-icon>{{hide1 ? 'visibility_off' : 'visibility'}}</mat-icon>
+              </button>
+        </mat-form-field>
+
+        <button class="btn-primary">
+            SIGN UP
+        </button>
+    </form>
+
+    <div class="login mt-1">
+        <p>Already have an account? <a routerLink="/auth/login">Login</a></p>
+    </div>
+
+</div>
