@@ -10,7 +10,6 @@ import { PaginationDto } from 'src/common/dtos/pagination.dto';
 import { DataSource, Repository } from 'typeorm';
 import { CreatePostDto } from './dto/create-post.dto';
 import { Post } from './entities/post.entity';
-import { validate as isUUID } from 'uuid';
 import { User } from '../auth/entities/user.entity';
 
 @Injectable()
@@ -41,6 +40,21 @@ export class PostsService {
     }
   }
 
+  async findByUser(paginationDto: PaginationDto, user: User) {
+    const { limit = 10, offset = 0 } = paginationDto;
+    const { id: userId } = user;
+
+    const posts = await this.postRepository.find({
+      where: { user: { id: userId } },
+      take: limit,
+      skip: offset,
+    });
+
+    return posts.map(({ ...rest }) => ({
+      ...rest,
+    }));
+  }
+
   async findAll(paginationDto: PaginationDto) {
     const { limit = 10, offset = 0 } = paginationDto;
 
@@ -54,28 +68,34 @@ export class PostsService {
     }));
   }
 
-  async findOne(term: string) {
-    let post: Post;
+  async findByTerm(term: string) {
+    const queryBuilder = this.postRepository.createQueryBuilder('prod');
+    const posts = await queryBuilder
+      .where('UPPER(title) LIKE :title', {
+        title: `%${term.toUpperCase()}%`,
+      })
+      .getMany();
 
-    if (isUUID(term)) {
-      post = await this.postRepository.findOneBy({ id: term });
-    } else {
-      const queryBuilder = this.postRepository.createQueryBuilder('prod'); //alias de la tabla prodictp
-      post = await queryBuilder
-        .where('UPPER(title) =:title', {
-          title: term.toUpperCase(),
-        })
-        .getOne();
-    }
+    if (!posts)
+      throw new NotFoundException(`Posts with term: ${term} not found`);
 
-    if (!post) throw new NotFoundException(`Post with id: ${term} not found`);
+    return posts;
+  }
 
-    return post;
+  async findByDate(date: Date) {
+    const queryBuilder = this.postRepository.createQueryBuilder('prod');
+    const posts = await queryBuilder
+      .where('createdAt = :createdAt', {
+        createdAt: date.toISOString(),
+      })
+      .getMany();
+
+    if (!posts) throw new NotFoundException(`Posts not found`);
+
+    return posts;
   }
 
   private handleDBExceptionError(error: any) {
-    if (error.code === '23505') throw new BadRequestException(error.detail);
-
     this.logger.error(error);
     throw new InternalServerErrorException(
       'Unexpected error, check server logs',

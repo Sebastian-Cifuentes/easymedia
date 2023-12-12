@@ -1,14 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import {
-  IsArray,
-  IsIn,
-  IsInt,
-  IsNumber,
-  IsOptional,
-  IsPositive,
-  IsString,
-  MinLength,
-} from 'class-validator';
+import { IsDate, IsOptional, IsString, MinLength } from 'class-validator';
 
 export class CreatePostDto {
   @ApiProperty({
@@ -26,6 +17,14 @@ export class CreatePostDto {
     minLength: 1,
   })
   @IsString()
-  @IsOptional()
   message?: string;
+
+  @ApiProperty({
+    description: 'Post message',
+    nullable: false,
+    minLength: 1,
+  })
+  @IsDate()
+  @IsOptional()
+  createdAt?: string;
 }

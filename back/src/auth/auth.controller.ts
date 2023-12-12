@@ -40,7 +40,6 @@ export class AuthController {
   @Get('private')
   @UseGuards(AuthGuard())
   privateRoute(
-    // @Req() request: Request
     @GetUser() user: User,
     @GetUser('email') email: string,
     @GetHeaders() headers: string[],

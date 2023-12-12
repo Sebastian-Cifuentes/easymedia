@@ -6,6 +6,7 @@ import {
 
 export const GetUser = createParamDecorator((data, ctx: ExecutionContext) => {
   //Extract request
+  console.log({ data });
   const req = ctx.switchToHttp().getRequest();
   const user = req.user;
 

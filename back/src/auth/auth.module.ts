@@ -25,12 +25,6 @@ import { JwtStrategy } from './strategies/jwt.strategies';
         },
       }),
     }),
-    // JwtModule.register({
-    //   secret: process.env.JWT_SECRET,
-    //   signOptions: {
-    //     expiresIn: '3h'
-    //   }
-    // })
   ],
   exports: [TypeOrmModule, JwtStrategy, PassportModule, JwtModule],
 })

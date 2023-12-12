@@ -1,4 +1,10 @@
-import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
+import {
+  Column,
+  CreateDateColumn,
+  Entity,
+  ManyToOne,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
 import { User } from '../../auth/entities/user.entity';
 import { ApiProperty } from '@nestjs/swagger';
 
@@ -31,7 +37,15 @@ export class Post {
     type: 'text',
     nullable: true,
   })
-  description: string;
+  message: string;
+
+  @ApiProperty({
+    example: 'Lorem ipsum',
+    description: 'Post message',
+    default: null,
+  })
+  @CreateDateColumn()
+  createdAt: Date;
 
   @ManyToOne(() => User, (user) => user.post, { eager: true })
   user: User;
