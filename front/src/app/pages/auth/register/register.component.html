@@ -8,34 +8,41 @@
         <p class="subtitle">Now, share is easy</p>
     </div>
 
-    <form class="register__form">
+    <form [formGroup]="form" class="register__form" (ngSubmit)="send()">
 
         <h2 class="form-title">Sign In</h2>
 
         <mat-form-field floatLabel="always">
             <mat-label>Full name</mat-label>
-            <input matInput placeholder="Camilo Cifuentes" required>
+            <input formControlName="fullName" matInput placeholder="Camilo Cifuentes" required>
+            <mat-error *ngIf="form.get('fullName')?.errors">{{formErrorService.mapErrors(form.get('fullName')!, 'Fullname')}}</mat-error>
         </mat-form-field>
+
         <mat-form-field floatLabel="always">
             <mat-label>Email</mat-label>
-            <input matInput placeholder="pat@example.com" required>
+            <input formControlName="email" matInput placeholder="pat@example.com" required>
+            <mat-error *ngIf="form.get('email')?.errors">{{formErrorService.mapErrors(form.get('email')!, 'Email')}}</mat-error>
         </mat-form-field>
+
         <mat-form-field floatLabel="always">
             <mat-label>Password</mat-label>
-            <input matInput placeholder="********" [type]="hide ? 'password' : 'text'" required>
+            <input formControlName="password" matInput placeholder="********" [type]="hide ? 'password' : 'text'" required>
             <button mat-icon-button matSuffix (click)="hide = !hide" [attr.aria-label]="'Hide password'" [attr.aria-pressed]="hide">
                 <mat-icon>{{hide ? 'visibility_off' : 'visibility'}}</mat-icon>
               </button>
-        </mat-form-field>
-        <mat-form-field floatLabel="always">
-            <mat-label>Confirm Password</mat-label>
-            <input matInput placeholder="********" [type]="hide1 ? 'password' : 'text'" required>
-            <button mat-icon-button matSuffix (click)="hide1 = !hide1" [attr.aria-label]="'Hide password'" [attr.aria-pressed]="hide1">
-                <mat-icon>{{hide1 ? 'visibility_off' : 'visibility'}}</mat-icon>
-              </button>
+              <mat-error *ngIf="form.get('password')?.errors">{{formErrorService.mapErrors(form.get('password')!, 'Password')}}</mat-error>
         </mat-form-field>
 
-        <button class="btn-primary">
+        <mat-form-field floatLabel="always">
+            <mat-label>Confirm Password</mat-label>
+            <input formControlName="confirmPassword" matInput placeholder="********" [type]="hide1 ? 'password' : 'text'" required>
+            <button mat-icon-button matSuffix (click)="hide1 = !hide1" [attr.aria-label]="'Hide password'" [attr.aria-pressed]="hide1">
+                <mat-icon>{{hide1 ? 'visibility_off' : 'visibility'}}</mat-icon>
+            </button>
+            <mat-error *ngIf="form.get('confirmPassword')?.errors">{{formErrorService.mapErrors(form.get('confirmPassword')!, 'Password')}}</mat-error>
+        </mat-form-field>
+
+        <button type="submit" class="btn-primary">
             SIGN UP
         </button>
     </form>
