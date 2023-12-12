@@ -7,6 +7,7 @@ import { ShowPostsComponent } from './show-posts/show-posts.component';
 import { MaterialModule } from '../material/material.module';
 import { NothingToSeeComponent } from './nothing-to-see/nothing-to-see.component';
 import { PaginatorComponent } from './paginator/paginator.component';
+import { DialogComponent } from './dialog/dialog.component';
 
 
 
@@ -17,7 +18,8 @@ import { PaginatorComponent } from './paginator/paginator.component';
     FilterByWordComponent,
     ShowPostsComponent,
     NothingToSeeComponent,
-    PaginatorComponent
+    PaginatorComponent,
+    DialogComponent
   ],
   imports: [
     CommonModule,
@@ -29,7 +31,8 @@ import { PaginatorComponent } from './paginator/paginator.component';
     FilterByWordComponent,
     ShowPostsComponent,
     NothingToSeeComponent,
-    PaginatorComponent
+    PaginatorComponent,
+    DialogComponent
   ]
 })
 export class ComponentsModule { }

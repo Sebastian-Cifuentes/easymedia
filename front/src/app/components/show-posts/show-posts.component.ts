@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, Input } from '@angular/core';
 
 @Component({
   selector: 'app-show-posts',
@@ -6,5 +6,8 @@ import { Component } from '@angular/core';
   styleUrls: ['./show-posts.component.scss']
 })
 export class ShowPostsComponent {
+
+  @Input() totalPosts!: number;
+  @Input() totalPage!: number;
 
 }

@@ -44,28 +44,37 @@ export class PostsService {
     const { limit = 10, offset = 0 } = paginationDto;
     const { id: userId } = user;
 
-    const posts = await this.postRepository.find({
+    let posts = await this.postRepository.find({
       where: { user: { id: userId } },
       take: limit,
       skip: offset,
     });
 
-    return posts.map(({ ...rest }) => ({
+    const count = await this.postRepository.count({
+      where: { user: { id: userId } },
+    });
+
+    posts = posts.map(({ ...rest }) => ({
       ...rest,
     }));
+    return { posts, count };
   }
 
   async findAll(paginationDto: PaginationDto) {
     const { limit = 10, offset = 0 } = paginationDto;
 
-    const posts = await this.postRepository.find({
+    let posts = await this.postRepository.find({
       take: limit,
       skip: offset,
     });
 
-    return posts.map(({ ...rest }) => ({
+    const count = await this.postRepository.count();
+
+    posts = posts.map(({ ...rest }) => ({
       ...rest,
     }));
+
+    return { posts, count };
   }
 
   async findByTerm(term: string) {

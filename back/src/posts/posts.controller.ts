@@ -51,7 +51,7 @@ export class ProductsController {
     return this.postsService.findAll(paginationDto);
   }
 
-  @Post('findByUser')
+  @Get('findByUser')
   @ApiResponse({ status: 201, description: 'Get all posts' })
   @ApiBadRequestResponse({ description: 'Bad request' })
   @ApiUnauthorizedResponse({ description: 'No token' })

@@ -16,14 +16,14 @@ export class AuthService {
   ) { }
 
   async login(user: User) {
-
     return await lastValueFrom(this.http.post<User>(`${this.api_url}/login`, user));
-
   }
 
   async register(user: User) {
-
     return await lastValueFrom(this.http.post<User>(`${this.api_url}/register`, user));
+  }
 
+  async checkAuthStatus() {
+    return await lastValueFrom(this.http.get<User>(`${this.api_url}/check-auth-status`));
   }
 }

@@ -1,14 +1,14 @@
-<div class="card">
+<div class="card mb-1">
     <div class="card-header">
-        <p class="title">Post title</p>
+        <p class="title">{{ post.title }}</p>
     </div>
     <div class="card-body">
         <p>
-            Card body
+            {{ post.message }}
         </p>
     </div>
     <div class="card-footer">
         <p class="date">11:25 am 20/11/23</p>
-        <p class="user">Camilo Cifuentes</p>
+        <p class="user">{{ post.user?.fullName }}</p>
     </div>
 </div>

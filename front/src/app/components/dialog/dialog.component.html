@@ -1,0 +1,7 @@
+<div class="dialog mt-3">
+    <img [src]="!data.error ? 'assets/icons/check-circle.png' : 'assets/icons/error-circle.png'" alt="">
+    <h1 mat-dialog-title>{{ !data.error ? 'Post Created' : 'Uppss Try Later' }}</h1>    
+</div>
+<div class="button" mat-dialog-actions>
+  <button mat-dialog-close class="btn-primary w-40">Ok</button>
+</div>

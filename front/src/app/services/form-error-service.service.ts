@@ -18,7 +18,6 @@ export class FormErrorService {
       return Object.keys(control.errors || {})
         .map(key => this.errorMap[key](control, name));
     } catch (error) {
-      console.log(error);
       return [];
     }
   }

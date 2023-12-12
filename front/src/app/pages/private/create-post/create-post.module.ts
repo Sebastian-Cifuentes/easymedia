@@ -4,6 +4,7 @@ import { CreatePostComponent } from './create-post.component';
 import { RouterModule, Routes } from '@angular/router';
 import { ComponentsModule } from 'src/app/components/components.module';
 import { MaterialModule } from 'src/app/material/material.module';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 const routes: Routes = [
   {
@@ -20,7 +21,9 @@ const routes: Routes = [
     CommonModule,
     RouterModule.forChild(routes),
     ComponentsModule,
-    MaterialModule
+    MaterialModule,
+    FormsModule,
+    ReactiveFormsModule
   ]
 })
 export class CreatePostModule { }

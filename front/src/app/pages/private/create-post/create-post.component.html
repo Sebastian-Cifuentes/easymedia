@@ -1,21 +1,25 @@
 <div class="create-post">
     <h1 class="main-title mt-3">Create message</h1>
 
-    <form class="mb-3">
+    <form [formGroup]="form" class="mb-3" (ngSubmit)="create()">
         <p>Title message</p>
         <mat-form-field class="example-full-width">
-            <input matInput placeholder="word" value="Sushi">
+            <input (keyup)="change()" formControlName="title" matInput placeholder="word" value="Sushi">
+            <mat-error *ngIf="form.get('title')?.errors">{{formErrorService.mapErrors(form.get('title')!, 'Title')}}</mat-error>
         </mat-form-field>
 
         <p>Title message</p>
         <mat-form-field class="example-full-width">
-            <input matInput placeholder="word" value="Sushi">
+            <input (keyup)="change()" formControlName="message" matInput placeholder="word" value="Sushi">
+            <mat-error *ngIf="form.get('message')?.errors">{{formErrorService.mapErrors(form.get('message')!, 'Message')}}</mat-error>
         </mat-form-field>
 
-        <button class="btn-primary">
-            SHARE
-        </button>
+        <div class="button">
+            <button type="submit" class="btn-primary w-40">
+                SHARE
+            </button>
+        </div>
     </form>
 
-    <app-card-message></app-card-message>
+    <app-card-message [post]="post"></app-card-message>
 </div>

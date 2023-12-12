@@ -2,11 +2,20 @@
     <h1 class="main-title mt-3">My publications</h1>
 
     <div class="filters">
-        <app-show-posts></app-show-posts>
+        <app-show-posts [totalPage]="posts.length" [totalPosts]="totalPosts"></app-show-posts>
         <app-filter-date></app-filter-date>
     </div>
 
-    <app-card-message></app-card-message>
+    <app-nothing-to-see *ngIf="(posts?.length === 0 || !posts) else postsTemplate"></app-nothing-to-see>
 
-    <app-nothing-to-see></app-nothing-to-see>
+    <ng-template #postsTemplate>
+        <div *ngFor="let post of posts">
+            <app-card-message [post]="post"></app-card-message>
+        </div>
+
+        <app-paginator></app-paginator>
+
+    </ng-template>
+    
+
 </div>
