@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { Paginator } from 'src/app/interfaces/Paginator';
 import { Post } from 'src/app/interfaces/Post';
 import { PostsService } from 'src/app/services/posts.service';
 
@@ -11,19 +12,35 @@ export class AllPostsComponent {
 
   posts!: Post[];
   totalPosts!: number;
+  countPages!: number;
+  pagination!: Paginator;
+  term!: string;
+
 
   constructor(
     private postsService: PostsService
   ) {} 
 
   async ngOnInit() {
+      this.pagination = {limit: 2, offset: 0};
       await this.getAll();
   }
 
   async getAll() {
-    const resp = await this.postsService.getAllPosts();
+    const resp = !this.term ? await this.postsService.getAllPosts(this.pagination) : await this.postsService.getByTerm(this.term, this.pagination);
     this.posts = resp.posts;
     this.totalPosts = resp.count;
+    this.countPages = this.pagination.limit + this.pagination.offset >= this.totalPosts ? this.totalPosts : this.pagination.limit + this.pagination.offset;
   }
+
+  async setTerm(term: string) {
+    this.term = term;
+    await this.getAll();
+  } 
+
+  async setPagination(pagination: Paginator) {
+    this.pagination = pagination;
+    await this.getAll();
+  } 
 
 }

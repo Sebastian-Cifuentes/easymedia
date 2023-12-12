@@ -2,7 +2,7 @@
     <h1 class="main-title mt-3">My publications</h1>
 
     <div class="filters">
-        <app-show-posts [totalPage]="posts.length" [totalPosts]="totalPosts"></app-show-posts>
+        <app-show-posts [totalPage]="countPages" [totalPosts]="totalPosts"></app-show-posts>
         <app-filter-date></app-filter-date>
     </div>
 
@@ -13,7 +13,7 @@
             <app-card-message [post]="post"></app-card-message>
         </div>
 
-        <app-paginator></app-paginator>
+        <app-paginator [totalPosts]="totalPosts" (onchangepage)="getAll($event)"></app-paginator>
 
     </ng-template>
     

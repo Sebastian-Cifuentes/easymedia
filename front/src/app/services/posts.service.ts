@@ -1,8 +1,9 @@
 import { Injectable } from '@angular/core';
 import { environment } from '../environments/environment';
 import { HttpClient, HttpParams } from '@angular/common/http';
-import { lastValueFrom, map } from 'rxjs';
+import { lastValueFrom } from 'rxjs';
 import { Post } from '../interfaces/Post';
+import { Paginator } from '../interfaces/Paginator';
 
 @Injectable({
   providedIn: 'root'
@@ -21,30 +22,36 @@ export class PostsService {
     );
   }
 
-  async getAllPosts() {
+  async getAllPosts(pagination: Paginator) {
+
+    const { limit, offset } = pagination;
 
     const params = new HttpParams()
-      .set('limit', 2)
-      .set('offset', 2);
+      .set('limit', limit)
+      .set('offset', offset);
 
     return await lastValueFrom(
       this.http.get<{posts: Post[], count: number}>(`${this.api_url}`, {params})
     );
   }
 
-  async getAllPostsByUser() {
+  async getAllPostsByUser(pagination: Paginator) {
+    const { limit, offset } = pagination;
+
     const params = new HttpParams()
-      .set('limit', 2)
-      .set('offset', 2);
+      .set('limit', limit)
+      .set('offset', offset);
     return await lastValueFrom(
       this.http.get<{posts: Post[], count: number}>(`${this.api_url}/findByUser`, {params})
     );
   }
 
-  async getByTerm(term: string) {
+  async getByTerm(term: string, pagination: Paginator) {
+    const { limit, offset } = pagination;
+
     const params = new HttpParams()
-      .set('limit', 2)
-      .set('offset', 2);
+      .set('limit', limit)
+      .set('offset', offset);
     return await lastValueFrom(
       this.http.get<{posts: Post[], count: number}>(`${this.api_url}/${term}`, {params})
     );

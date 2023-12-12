@@ -85,10 +85,16 @@ export class PostsService {
       })
       .getMany();
 
+    const count = await queryBuilder
+      .where('UPPER(title) LIKE :title', {
+        title: `%${term.toUpperCase()}%`,
+      })
+      .getCount();
+
     if (!posts)
       throw new NotFoundException(`Posts with term: ${term} not found`);
 
-    return posts;
+    return { posts, count };
   }
 
   async findByDate(date: Date) {
