@@ -24,4 +24,8 @@ export class StorageService {
     return JSON.parse(localStorage.getItem('user')!);
   }
 
+  clearCache() {
+    localStorage.clear();
+  }
+
 }

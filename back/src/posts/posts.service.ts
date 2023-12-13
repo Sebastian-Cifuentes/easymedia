@@ -32,6 +32,7 @@ export class PostsService {
         user,
       });
       await this.postRepository.save(post);
+      //TODO: refactor the code. tech debt
 
       return { ...post };
     } catch (err) {
@@ -40,113 +41,129 @@ export class PostsService {
   }
 
   async findByUser(paginationDto: PaginationDto, user: User) {
-    const { limit = 2, offset = 0 } = paginationDto;
-    const { id: userId } = user;
+    try {
+      const { limit = 2, offset = 0 } = paginationDto;
+      const { id: userId } = user;
 
-    let posts = await this.postRepository.find({
-      where: { user: { id: userId } },
-      take: limit,
-      skip: offset,
-    });
+      let posts = await this.postRepository.find({
+        where: { user: { id: userId } },
+        take: limit,
+        skip: offset,
+      });
 
-    const count = await this.postRepository.count({
-      where: { user: { id: userId } },
-    });
+      const count = await this.postRepository.count({
+        where: { user: { id: userId } },
+      });
+      //TODO: refactor the code. tech debt
 
-    posts = posts.map(({ ...rest }) => ({
-      ...rest,
-    }));
-    return { posts, count };
+      posts = posts.map(({ ...rest }) => ({
+        ...rest,
+      }));
+      return { posts, count };
+    } catch (err) {
+      this.handleDBExceptionError(err);
+    }
   }
 
   async findAll(paginationDto: PaginationDto) {
-    const { limit = 2, offset = 0 } = paginationDto;
+    try {
+      const { limit = 2, offset = 0 } = paginationDto;
 
-    let posts = await this.postRepository.find({
-      take: limit,
-      skip: offset,
-    });
+      let posts = await this.postRepository.find({
+        take: limit,
+        skip: offset,
+      });
 
-    const count = await this.postRepository.count();
+      const count = await this.postRepository.count();
+      //TODO: refactor the code. tech debt
 
-    posts = posts.map(({ ...rest }) => ({
-      ...rest,
-    }));
+      posts = posts.map(({ ...rest }) => ({
+        ...rest,
+      }));
 
-    return { posts, count };
+      return { posts, count };
+    } catch (err) {
+      this.handleDBExceptionError(err);
+    }
   }
 
   async findBy(term: string, date: string, paginationDto: PaginationDto) {
-    let queryBuilder = this.postRepository.createQueryBuilder('prod');
-    const { limit = 2, offset = 0 } = paginationDto;
-    queryBuilder = queryBuilder.offset(offset);
-    queryBuilder = queryBuilder.limit(limit);
-    let posts;
-    let count;
+    try {
+      let queryBuilder = this.postRepository.createQueryBuilder('prod');
+      const { limit = 2, offset = 0 } = paginationDto;
+      queryBuilder = queryBuilder.offset(offset);
+      queryBuilder = queryBuilder.limit(limit);
+      let posts;
+      let count;
 
-    if (term) {
-      posts = await queryBuilder
-        .where('UPPER(title) LIKE :title', {
-          title: `%${term.toUpperCase()}%`,
-        })
-        .getMany();
+      if (term) {
+        posts = await queryBuilder
+          .where('UPPER(title) LIKE :title', {
+            title: `%${term.toUpperCase()}%`,
+          })
+          .getMany();
 
-      count = await queryBuilder
-        .where('UPPER(title) LIKE :title', {
-          title: `%${term.toUpperCase()}%`,
-        })
-        .getCount();
+        count = await queryBuilder
+          .where('UPPER(title) LIKE :title', {
+            title: `%${term.toUpperCase()}%`,
+          })
+          .getCount();
+      }
+
+      if (date) {
+        let startDate = new Date(JSON.parse(date));
+        startDate = new Date(startDate.setHours(startDate.getHours() - 5));
+        let finalDate = new Date(startDate);
+        finalDate = new Date(finalDate.setHours(finalDate.getHours() + 24));
+        posts = await queryBuilder
+          .where('created_at > :start_date AND created_at < :final_date', {
+            start_date: startDate.toISOString(),
+            final_date: finalDate.toISOString(),
+          })
+          .getMany();
+
+        count = await queryBuilder
+          .where('created_at > :start_date AND created_at < :final_date', {
+            start_date: startDate.toISOString(),
+            final_date: finalDate.toISOString(),
+          })
+          .getCount();
+      }
+
+      if (term && date) {
+        let startDate = new Date(JSON.parse(date));
+        startDate = new Date(startDate.setHours(startDate.getHours() - 5));
+        let finalDate = new Date(startDate);
+        finalDate = new Date(finalDate.setHours(finalDate.getHours() + 24));
+        posts = await queryBuilder
+          .where('created_at > :start_date AND created_at < :final_date', {
+            start_date: startDate.toISOString(),
+            final_date: finalDate.toISOString(),
+          })
+          .andWhere('UPPER(title) LIKE :title', {
+            title: `%${term.toUpperCase()}%`,
+          })
+          .getMany();
+
+        count = await queryBuilder
+          .where('created_at > :start_date AND created_at < :final_date', {
+            start_date: startDate.toISOString(),
+            final_date: finalDate.toISOString(),
+          })
+          .andWhere('UPPER(title) LIKE :title', {
+            title: `%${term.toUpperCase()}%`,
+          })
+          .getCount();
+      }
+
+      //TODO: refactor the code. tech debt
+
+      if (!posts) throw new NotFoundException(`Posts not found`);
+
+      return { posts, count };
+    } catch (err) {
+      this.handleDBExceptionError(err);
     }
-
-    if (date) {
-      let startDate = new Date(JSON.parse(date));
-      startDate = new Date(startDate.setHours(startDate.getHours() - 5));
-      let finalDate = new Date(startDate);
-      finalDate = new Date(finalDate.setHours(finalDate.getHours() + 24));
-      posts = await queryBuilder
-        .where('created_at > :start_date AND created_at < :final_date', {
-          start_date: startDate.toISOString(),
-          final_date: finalDate.toISOString(),
-        })
-        .getMany();
-
-      count = await queryBuilder
-        .where('created_at > :start_date AND created_at < :final_date', {
-          start_date: startDate.toISOString(),
-          final_date: finalDate.toISOString(),
-        })
-        .getCount();
-    }
-
-    if (term && date) {
-      let startDate = new Date(JSON.parse(date));
-      startDate = new Date(startDate.setHours(startDate.getHours() - 5));
-      let finalDate = new Date(startDate);
-      finalDate = new Date(finalDate.setHours(finalDate.getHours() + 24));
-      posts = await queryBuilder
-        .where('created_at > :start_date AND created_at < :final_date', {
-          start_date: startDate.toISOString(),
-          final_date: finalDate.toISOString(),
-        })
-        .andWhere('UPPER(title) LIKE :title', {
-          title: `%${term.toUpperCase()}%`,
-        })
-        .getMany();
-
-      count = await queryBuilder
-        .where('created_at > :start_date AND created_at < :final_date', {
-          start_date: startDate.toISOString(),
-          final_date: finalDate.toISOString(),
-        })
-        .andWhere('UPPER(title) LIKE :title', {
-          title: `%${term.toUpperCase()}%`,
-        })
-        .getCount();
-    }
-
-    if (!posts) throw new NotFoundException(`Posts not found`);
-
-    return { posts, count };
   }
 
   private handleDBExceptionError(error: any) {
