@@ -4,34 +4,23 @@ import {
   InternalServerErrorException,
   UnauthorizedException,
 } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
 import { CreateUserDto, LoginUserDto } from './dto';
 import { JwtService } from '@nestjs/jwt';
-import { Repository } from 'typeorm';
-import { User } from './entities/user.entity';
 
 import * as bcrypt from 'bcrypt';
 import { JwtPayload } from './interfaces/jwt-payload.interface';
+import { UserRepository } from './repository/user.repository';
 
 @Injectable()
 export class AuthService {
   constructor(
-    @InjectRepository(User)
-    private readonly userRepository: Repository<User>,
+    private readonly userRepository: UserRepository,
     private readonly jwtService: JwtService,
   ) {}
 
   async create(createuserDto: CreateUserDto) {
     try {
-      const { password, ...userData } = createuserDto;
-
-      const user = this.userRepository.create({
-        ...userData,
-        password: bcrypt.hashSync(password, 10),
-      });
-
-      await this.userRepository.save(user);
-      delete user.password;
+      const user = await this.userRepository.createUser(createuserDto);
 
       return {
         ...user,
@@ -48,10 +37,7 @@ export class AuthService {
 
     email = email.toLowerCase().trim();
 
-    const user = await this.userRepository.findOne({
-      where: { email },
-      select: { email: true, password: true, id: true, fullName: true },
-    });
+    const user = await this.userRepository.login(email);
 
     if (!user) throw new UnauthorizedException('Not valid credentials (email)');
 
