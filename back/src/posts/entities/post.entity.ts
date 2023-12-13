@@ -45,7 +45,7 @@ export class Post {
     default: null,
   })
   @CreateDateColumn()
-  createdAt: Date;
+  created_at: Date;
 
   @ManyToOne(() => User, (user) => user.post, { eager: true })
   user: User;

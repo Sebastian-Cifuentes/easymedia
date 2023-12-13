@@ -26,5 +26,5 @@ export class CreatePostDto {
   })
   @IsDate()
   @IsOptional()
-  createdAt?: string;
+  created_at?: string;
 }

@@ -46,14 +46,23 @@ export class PostsService {
     );
   }
 
-  async getByTerm(term: string, pagination: Paginator) {
+  async getBy(pagination: Paginator, term?: string, date?: string) {
     const { limit, offset } = pagination;
 
-    const params = new HttpParams()
+    let params = new HttpParams()
       .set('limit', limit)
       .set('offset', offset);
+
+    if (term) {
+      params = params.append('term', term);
+    }
+
+    if (date) {
+      params = params.append('date', JSON.stringify(date)!);
+    }
+
     return await lastValueFrom(
-      this.http.get<{posts: Post[], count: number}>(`${this.api_url}/${term}`, {params})
+      this.http.get<{posts: Post[], count: number}>(`${this.api_url}/filter`, {params})
     );
   }
 

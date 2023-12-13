@@ -21,6 +21,7 @@ import { User } from '../auth/entities/user.entity';
 import { CreatePostDto } from './dto/create-post.dto';
 import { Post as PostEntity } from './entities/post.entity';
 import { AuthGuard } from '@nestjs/passport';
+import { QueryFilterDto } from './dto/query.dto';
 
 @ApiTags('Posts')
 @Controller('posts')
@@ -52,7 +53,7 @@ export class ProductsController {
   }
 
   @Get('findByUser')
-  @ApiResponse({ status: 201, description: 'Get all posts' })
+  @ApiResponse({ status: 201, description: 'Get all posts by user' })
   @ApiBadRequestResponse({ description: 'Bad request' })
   @ApiUnauthorizedResponse({ description: 'No token' })
   @ApiBearerAuth()
@@ -61,8 +62,17 @@ export class ProductsController {
     return this.postsService.findByUser(paginationDto, user);
   }
 
-  @Get(':term')
-  findOne(@Param('term') term: string) {
-    return this.postsService.findByTerm(term);
+  @Get('filter')
+  @ApiResponse({ status: 201, description: 'Get all posts by filters' })
+  @ApiBadRequestResponse({ description: 'Bad request' })
+  @ApiUnauthorizedResponse({ description: 'No token' })
+  @ApiBearerAuth()
+  @UseGuards(AuthGuard())
+  findBy(@Query() query: QueryFilterDto) {
+    const { limit, offset, term, date } = query;
+    return this.postsService.findBy(term, date, {
+      limit,
+      offset,
+    });
   }
 }

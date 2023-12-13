@@ -1,10 +1,10 @@
 <div class="my-posts">
     <h1 class="main-title mt-3">All publications</h1>
 
-    <div class="filters">
+    <div class="filters mt-3">
         <app-show-posts [totalPage]="countPages" [totalPosts]="totalPosts"></app-show-posts>
         <app-filter-by-word (onsearch)="setTerm($event)"></app-filter-by-word>
-        <app-filter-date></app-filter-date>
+        <app-filter-date (ondate)="setDate($event)"></app-filter-date>
     </div>
 
     <app-nothing-to-see *ngIf="(posts?.length === 0 || !posts) else postsTemplate"></app-nothing-to-see>

@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output, effect, signal } from '@angular/core';
 import { Paginator } from 'src/app/interfaces/Paginator';
 
 @Component({
@@ -6,19 +6,25 @@ import { Paginator } from 'src/app/interfaces/Paginator';
   templateUrl: './paginator.component.html',
   styleUrls: ['./paginator.component.scss']
 })
-export class PaginatorComponent implements OnInit {
+export class PaginatorComponent {
 
-  @Input() totalPosts!: number;
+  total = signal(0);
+  @Input() set totalPosts(totalPosts: number) {
+    this.total.set(totalPosts);
+  }
   @Output() onchangepage: EventEmitter<Paginator> = new EventEmitter<Paginator>()
   pages: number[] = [];
   beforePage = 0;
   nextPage = 1;
   limit = 2;
 
-  ngOnInit(): void {
-      for (let i = 0; i < this.totalPosts/this.limit; i++) {
+  constructor() {
+    effect(() => {
+      this.pages = [];
+      for (let i = 0; i < this.total()/this.limit; i++) {
         this.pages.push(i);
       }
+    })
   }
 
   changePage(page: number) {

@@ -15,6 +15,7 @@ export class AllPostsComponent {
   countPages!: number;
   pagination!: Paginator;
   term!: string;
+  date!: string;
 
 
   constructor(
@@ -27,7 +28,9 @@ export class AllPostsComponent {
   }
 
   async getAll() {
-    const resp = !this.term ? await this.postsService.getAllPosts(this.pagination) : await this.postsService.getByTerm(this.term, this.pagination);
+    const resp = this.term || this.date ?
+      await this.postsService.getBy(this.pagination, this.term, this.date) :
+      await this.postsService.getAllPosts(this.pagination);
     this.posts = resp.posts;
     this.totalPosts = resp.count;
     this.countPages = this.pagination.limit + this.pagination.offset >= this.totalPosts ? this.totalPosts : this.pagination.limit + this.pagination.offset;
@@ -35,6 +38,11 @@ export class AllPostsComponent {
 
   async setTerm(term: string) {
     this.term = term;
+    await this.getAll();
+  } 
+
+  async setDate(date: string) {
+    this.date = date;
     await this.getAll();
   } 
 

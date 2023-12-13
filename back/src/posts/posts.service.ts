@@ -1,5 +1,4 @@
 import {
-  BadRequestException,
   Injectable,
   InternalServerErrorException,
   Logger,
@@ -41,7 +40,7 @@ export class PostsService {
   }
 
   async findByUser(paginationDto: PaginationDto, user: User) {
-    const { limit = 10, offset = 0 } = paginationDto;
+    const { limit = 2, offset = 0 } = paginationDto;
     const { id: userId } = user;
 
     let posts = await this.postRepository.find({
@@ -61,7 +60,7 @@ export class PostsService {
   }
 
   async findAll(paginationDto: PaginationDto) {
-    const { limit = 10, offset = 0 } = paginationDto;
+    const { limit = 2, offset = 0 } = paginationDto;
 
     let posts = await this.postRepository.find({
       take: limit,
@@ -77,37 +76,77 @@ export class PostsService {
     return { posts, count };
   }
 
-  async findByTerm(term: string) {
-    const queryBuilder = this.postRepository.createQueryBuilder('prod');
-    const posts = await queryBuilder
-      .where('UPPER(title) LIKE :title', {
-        title: `%${term.toUpperCase()}%`,
-      })
-      .getMany();
+  async findBy(term: string, date: string, paginationDto: PaginationDto) {
+    let queryBuilder = this.postRepository.createQueryBuilder('prod');
+    const { limit = 2, offset = 0 } = paginationDto;
+    queryBuilder = queryBuilder.offset(offset);
+    queryBuilder = queryBuilder.limit(limit);
+    let posts;
+    let count;
 
-    const count = await queryBuilder
-      .where('UPPER(title) LIKE :title', {
-        title: `%${term.toUpperCase()}%`,
-      })
-      .getCount();
+    if (term) {
+      posts = await queryBuilder
+        .where('UPPER(title) LIKE :title', {
+          title: `%${term.toUpperCase()}%`,
+        })
+        .getMany();
 
-    if (!posts)
-      throw new NotFoundException(`Posts with term: ${term} not found`);
+      count = await queryBuilder
+        .where('UPPER(title) LIKE :title', {
+          title: `%${term.toUpperCase()}%`,
+        })
+        .getCount();
+    }
 
-    return { posts, count };
-  }
+    if (date) {
+      let startDate = new Date(JSON.parse(date));
+      startDate = new Date(startDate.setHours(startDate.getHours() - 5));
+      let finalDate = new Date(startDate);
+      finalDate = new Date(finalDate.setHours(finalDate.getHours() + 24));
+      posts = await queryBuilder
+        .where('created_at > :start_date AND created_at < :final_date', {
+          start_date: startDate.toISOString(),
+          final_date: finalDate.toISOString(),
+        })
+        .getMany();
 
-  async findByDate(date: Date) {
-    const queryBuilder = this.postRepository.createQueryBuilder('prod');
-    const posts = await queryBuilder
-      .where('createdAt = :createdAt', {
-        createdAt: date.toISOString(),
-      })
-      .getMany();
+      count = await queryBuilder
+        .where('created_at > :start_date AND created_at < :final_date', {
+          start_date: startDate.toISOString(),
+          final_date: finalDate.toISOString(),
+        })
+        .getCount();
+    }
+
+    if (term && date) {
+      let startDate = new Date(JSON.parse(date));
+      startDate = new Date(startDate.setHours(startDate.getHours() - 5));
+      let finalDate = new Date(startDate);
+      finalDate = new Date(finalDate.setHours(finalDate.getHours() + 24));
+      posts = await queryBuilder
+        .where('created_at > :start_date AND created_at < :final_date', {
+          start_date: startDate.toISOString(),
+          final_date: finalDate.toISOString(),
+        })
+        .andWhere('UPPER(title) LIKE :title', {
+          title: `%${term.toUpperCase()}%`,
+        })
+        .getMany();
+
+      count = await queryBuilder
+        .where('created_at > :start_date AND created_at < :final_date', {
+          start_date: startDate.toISOString(),
+          final_date: finalDate.toISOString(),
+        })
+        .andWhere('UPPER(title) LIKE :title', {
+          title: `%${term.toUpperCase()}%`,
+        })
+        .getCount();
+    }
 
     if (!posts) throw new NotFoundException(`Posts not found`);
 
-    return posts;
+    return { posts, count };
   }
 
   private handleDBExceptionError(error: any) {
