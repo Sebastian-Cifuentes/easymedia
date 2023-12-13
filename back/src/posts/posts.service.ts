@@ -6,7 +6,7 @@ import {
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { PaginationDto } from 'src/common/dtos/pagination.dto';
-import { DataSource, Repository } from 'typeorm';
+import { Repository } from 'typeorm';
 import { CreatePostDto } from './dto/create-post.dto';
 import { Post } from './entities/post.entity';
 import { User } from '../auth/entities/user.entity';
@@ -18,12 +18,10 @@ export class PostsService {
   constructor(
     @InjectRepository(Post)
     private readonly postRepository: Repository<Post>,
-
-    private readonly dataSource: DataSource,
   ) {}
 
   async create(CreatePostDto: CreatePostDto, user: User) {
-    // new Product();
+    // new Post();
     try {
       const { ...postDetails } = CreatePostDto;
 

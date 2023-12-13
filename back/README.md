@@ -10,8 +10,7 @@ docker-compose up -d
 ```
 6. Run project with: ```npm run start:dev```
 
-# Nota
+# Note
 
-For running this project you must have these: docker / nestjs.
-
-# Productiones notes
+- For running this project you must have these: docker / nestjs.
+- To look the api docs, you can access to http://localhost:3000

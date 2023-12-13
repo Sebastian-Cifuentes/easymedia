@@ -41,7 +41,7 @@ export class Post {
 
   @ApiProperty({
     example: 'Lorem ipsum',
-    description: 'Post message',
+    description: 'Post date',
     default: null,
   })
   @CreateDateColumn()

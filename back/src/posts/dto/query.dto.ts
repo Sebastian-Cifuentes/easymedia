@@ -22,16 +22,14 @@ export class QueryFilterDto {
   offset?: number;
 
   @ApiProperty({
-    default: 0,
-    description: 'How many rows do you want to skip',
+    description: 'Search post title by a term',
   })
   @IsOptional()
   @IsString()
   term?: string;
 
   @ApiProperty({
-    default: 0,
-    description: 'How many rows do you want to skip',
+    description: 'Filter by date',
   })
   @IsOptional()
   @IsString()

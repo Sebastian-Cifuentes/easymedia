@@ -1,12 +1,4 @@
-import {
-  Controller,
-  Get,
-  Post,
-  Body,
-  Query,
-  UseGuards,
-  Param,
-} from '@nestjs/common';
+import { Controller, Get, Post, Body, Query, UseGuards } from '@nestjs/common';
 import {
   ApiBadRequestResponse,
   ApiBearerAuth,
@@ -31,7 +23,7 @@ export class ProductsController {
   @Post()
   @ApiResponse({
     status: 201,
-    description: 'Posts was created',
+    description: 'Post was created',
     type: PostEntity,
   })
   @ApiResponse({ status: 400, description: 'Bad request' })

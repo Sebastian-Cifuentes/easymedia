@@ -18,7 +18,7 @@ async function bootstrap() {
 
   const config = new DocumentBuilder()
     .setTitle('Easymedia RestfulAPI')
-    .setDescription('Easymedia endpoind')
+    .setDescription('Easymedia endpoint')
     .setVersion('1.0')
     .addBearerAuth()
     .build();
