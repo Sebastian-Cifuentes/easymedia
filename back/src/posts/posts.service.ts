@@ -10,28 +10,21 @@ import { Repository } from 'typeorm';
 import { CreatePostDto } from './dto/create-post.dto';
 import { Post } from './entities/post.entity';
 import { User } from '../auth/entities/user.entity';
+import { PostRepository } from './repository/posts.repository';
 
 @Injectable()
 export class PostsService {
   private readonly logger = new Logger('ProductsService');
 
   constructor(
-    @InjectRepository(Post)
-    private readonly postRepository: Repository<Post>,
+    // @InjectRepository(Post)
+    // private readonly postRepository: Repository<Post>,
+    private readonly postRepository: PostRepository,
   ) {}
 
-  async create(CreatePostDto: CreatePostDto, user: User) {
-    // new Post();
+  async create(createPostDto: CreatePostDto, user: User) {
     try {
-      const { ...postDetails } = CreatePostDto;
-
-      const post = this.postRepository.create({
-        ...postDetails,
-        user,
-      });
-      await this.postRepository.save(post);
-      //TODO: refactor the code. tech debt
-
+      const post = await this.postRepository.createPost(createPostDto, user);
       return { ...post };
     } catch (err) {
       this.handleDBExceptionError(err);
@@ -40,23 +33,8 @@ export class PostsService {
 
   async findByUser(paginationDto: PaginationDto, user: User) {
     try {
-      const { limit = 2, offset = 0 } = paginationDto;
-      const { id: userId } = user;
-
-      let posts = await this.postRepository.find({
-        where: { user: { id: userId } },
-        take: limit,
-        skip: offset,
-      });
-
-      const count = await this.postRepository.count({
-        where: { user: { id: userId } },
-      });
-      //TODO: refactor the code. tech debt
-
-      posts = posts.map(({ ...rest }) => ({
-        ...rest,
-      }));
+      const posts = await this.postRepository.findByUser(paginationDto, user);
+      const count = 0;
       return { posts, count };
     } catch (err) {
       this.handleDBExceptionError(err);
@@ -65,19 +43,9 @@ export class PostsService {
 
   async findAll(paginationDto: PaginationDto) {
     try {
-      const { limit = 2, offset = 0 } = paginationDto;
+      const posts = await this.postRepository.findAll(paginationDto);
 
-      let posts = await this.postRepository.find({
-        take: limit,
-        skip: offset,
-      });
-
-      const count = await this.postRepository.count();
-      //TODO: refactor the code. tech debt
-
-      posts = posts.map(({ ...rest }) => ({
-        ...rest,
-      }));
+      const count = 0;
 
       return { posts, count };
     } catch (err) {
@@ -87,74 +55,24 @@ export class PostsService {
 
   async findBy(term: string, date: string, paginationDto: PaginationDto) {
     try {
-      let queryBuilder = this.postRepository.createQueryBuilder('prod');
-      const { limit = 2, offset = 0 } = paginationDto;
-      queryBuilder = queryBuilder.offset(offset);
-      queryBuilder = queryBuilder.limit(limit);
       let posts;
       let count;
 
       if (term) {
-        posts = await queryBuilder
-          .where('UPPER(title) LIKE :title', {
-            title: `%${term.toUpperCase()}%`,
-          })
-          .getMany();
-
-        count = await queryBuilder
-          .where('UPPER(title) LIKE :title', {
-            title: `%${term.toUpperCase()}%`,
-          })
-          .getCount();
+        posts = await this.postRepository.findByTerm(paginationDto, term);
       }
 
       if (date) {
-        let startDate = new Date(JSON.parse(date));
-        startDate = new Date(startDate.setHours(startDate.getHours() - 5));
-        let finalDate = new Date(startDate);
-        finalDate = new Date(finalDate.setHours(finalDate.getHours() + 24));
-        posts = await queryBuilder
-          .where('created_at > :start_date AND created_at < :final_date', {
-            start_date: startDate.toISOString(),
-            final_date: finalDate.toISOString(),
-          })
-          .getMany();
-
-        count = await queryBuilder
-          .where('created_at > :start_date AND created_at < :final_date', {
-            start_date: startDate.toISOString(),
-            final_date: finalDate.toISOString(),
-          })
-          .getCount();
+        posts = await this.postRepository.findByDate(paginationDto, date);
       }
 
       if (term && date) {
-        let startDate = new Date(JSON.parse(date));
-        startDate = new Date(startDate.setHours(startDate.getHours() - 5));
-        let finalDate = new Date(startDate);
-        finalDate = new Date(finalDate.setHours(finalDate.getHours() + 24));
-        posts = await queryBuilder
-          .where('created_at > :start_date AND created_at < :final_date', {
-            start_date: startDate.toISOString(),
-            final_date: finalDate.toISOString(),
-          })
-          .andWhere('UPPER(title) LIKE :title', {
-            title: `%${term.toUpperCase()}%`,
-          })
-          .getMany();
-
-        count = await queryBuilder
-          .where('created_at > :start_date AND created_at < :final_date', {
-            start_date: startDate.toISOString(),
-            final_date: finalDate.toISOString(),
-          })
-          .andWhere('UPPER(title) LIKE :title', {
-            title: `%${term.toUpperCase()}%`,
-          })
-          .getCount();
+        posts = await this.postRepository.findByTermAndDate(
+          paginationDto,
+          term,
+          date,
+        );
       }
-
-      //TODO: refactor the code. tech debt
 
       if (!posts) throw new NotFoundException(`Posts not found`);
 
