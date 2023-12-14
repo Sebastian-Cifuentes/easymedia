@@ -27,8 +27,7 @@ export class PostsService {
   async findByUser(paginationDto: PaginationDto, user: User) {
     try {
       const posts = await this.postRepository.findByUser(paginationDto, user);
-      const count = 0;
-      return { posts, count };
+      return posts;
     } catch (err) {
       this.handleDBExceptionError(err);
     }
@@ -38,9 +37,7 @@ export class PostsService {
     try {
       const posts = await this.postRepository.findAll(paginationDto);
 
-      const count = 0;
-
-      return { posts, count };
+      return posts;
     } catch (err) {
       this.handleDBExceptionError(err);
     }
@@ -49,7 +46,6 @@ export class PostsService {
   async findBy(term: string, date: string, paginationDto: PaginationDto) {
     try {
       let posts;
-      let count;
 
       if (term) {
         posts = await this.postRepository.findByTerm(paginationDto, term);
@@ -69,7 +65,7 @@ export class PostsService {
 
       if (!posts) throw new NotFoundException(`Posts not found`);
 
-      return { posts, count };
+      return posts;
     } catch (err) {
       this.handleDBExceptionError(err);
     }
