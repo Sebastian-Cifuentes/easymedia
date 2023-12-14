@@ -12,6 +12,10 @@ const routes: Routes = [
     path: '',
     canActivate: [authGuard],
     loadChildren: () => import('./private/private.module').then(m => m.PrivateModule)
+  },
+  {
+    path: '**',
+    redirectTo: ''
   }
 ];
 

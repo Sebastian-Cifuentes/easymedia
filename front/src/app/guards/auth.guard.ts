@@ -11,10 +11,15 @@ export const authGuard: CanActivateFn = async (route, state) => {
 
   const token = storageService.getToken();
     if (token) {
-      const { token: t, ...user } = await authService.checkAuthStatus();
-      storageService.setToken(t!);
-      storageService.setUser(user);
-      return true;
+      try {
+        const { token: t, ...user } = await authService.checkAuthStatus();
+        storageService.setToken(t!);
+        storageService.setUser(user);
+        return true;
+      } catch(err) {
+        router.navigateByUrl('/auth/login');
+        return false;
+      }
     }
     router.navigateByUrl('/auth/login');
     return false;

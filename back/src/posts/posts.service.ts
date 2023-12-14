@@ -4,11 +4,8 @@ import {
   Logger,
   NotFoundException,
 } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
 import { PaginationDto } from 'src/common/dtos/pagination.dto';
-import { Repository } from 'typeorm';
 import { CreatePostDto } from './dto/create-post.dto';
-import { Post } from './entities/post.entity';
 import { User } from '../auth/entities/user.entity';
 import { PostRepository } from './repository/posts.repository';
 
@@ -16,11 +13,7 @@ import { PostRepository } from './repository/posts.repository';
 export class PostsService {
   private readonly logger = new Logger('ProductsService');
 
-  constructor(
-    // @InjectRepository(Post)
-    // private readonly postRepository: Repository<Post>,
-    private readonly postRepository: PostRepository,
-  ) {}
+  constructor(private readonly postRepository: PostRepository) {}
 
   async create(createPostDto: CreatePostDto, user: User) {
     try {
